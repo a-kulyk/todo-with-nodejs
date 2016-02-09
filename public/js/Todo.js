@@ -50,7 +50,7 @@ var myModule = (function() {
 
         if (event.keyCode == 13 || event.type == "click") { //checking if event is relevant
 
-            var todos = get_todos(rootId);
+            
 
             var inputData = this.val();
             var re = /^[\w\s]+$/;
@@ -64,27 +64,29 @@ var myModule = (function() {
                 }).done(function(data) {
                     console.log(data);
                     if (data) {                             // if server returns true new line will be added to the list 
-                        buildLine();
+                        buildLine(rootId, list, inputData);
                     }
                 });
-
-                function buildLine() {
-                    todos.push(inputData);
-                    localStorage.setItem(rootId, JSON.stringify(todos));
-
-                    list.append('<tr><td><b>' + inputData + '</b></td><td class="tabledata"><button class="btnDelete btn btn-default">Remove</button></td></tr>');
-
-                    $('.btnDelete').click(onRemoveItem.bind(rootId));
-
-                    $("#" + rootId).find('input').val('').focus();
-                }
-
+                
             } else {
                 console.log("Error. Input not valid!");
                 $("#" + rootId).find('input').attr('placeholder', 'Incorrect input value').val('').focus();
                 $("#" + rootId).addClass('has-error');
             }
         }
+    }
+
+    function buildLine(rootId, list, inputData) {
+        var todos = get_todos(rootId);
+        todos.push(inputData);
+
+        localStorage.setItem(rootId, JSON.stringify(todos));
+
+        list.append('<tr><td><b>' + inputData + '</b></td><td class="tabledata"><button class="btnDelete btn btn-default">Remove</button></td></tr>');
+
+        $('.btnDelete').click(onRemoveItem.bind(rootId));
+
+        $("#" + rootId).find('input').val('').focus();
     }
 
     /* Handler for remove button retrieves array of list items, finds and removes from it 
